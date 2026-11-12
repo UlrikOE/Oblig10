@@ -4,15 +4,6 @@ from datetime import datetime
 from matplotlib import pyplot as plt
 from statistics import median
 
-dato = []
-maks_måned = []
-min_måned = []
-maks_snødybde = []
-tot_nedbør = []
-maks_midvind = []
-
-
-
 månedsdata = {}
 maks_per_måned = {}
 min_per_måned = {}
@@ -22,7 +13,6 @@ maks_midvind_måned = {}
 stasjoner = {}
 
 filer = glob.glob("Værdata/*.csv")
-
 
 for fil in filer:
     with open(fil, "r", encoding="utf-8") as fila:
@@ -35,7 +25,6 @@ for fil in filer:
 
             if stasjonsnummer.startswith("SN"):
                 stasjoner[stasjonsnummer] = stasjonsnavn
-
 
 for stasjonsnummer in stasjoner:
     print(stasjonsnummer, stasjoner[stasjonsnummer])
@@ -77,7 +66,6 @@ for år_måned in månedsdata:
 
     for rad in månedsdata[år_måned]:
 
-
         if rad[4].strip() != "-" and rad[4].strip() != "":
             mid_temp.append(float(rad[4].strip().replace(",", ".")))
 
@@ -90,34 +78,23 @@ for år_måned in månedsdata:
         if rad[6].strip() != "-" and rad[6].strip() != "":
             høy_midvind.append(float(rad[6].strip().replace(",", ".")))
 
-            if høy_midvind:
-                maks_midvind = max(høy_midvind)
-                maks_midvind_måned[år_måned] = maks_midvind
-                 #   print(år_måned, maks_midvind)
+    if høy_midvind:
+        maks_midvind = max(høy_midvind)
+        maks_midvind_måned[år_måned] = maks_midvind
 
+    if len(nedbør) > 20:
+        tot_nedbør = sum(nedbør)
+        tot_nedbør_måned[år_måned] = tot_nedbør
 
-            if len(nedbør) > 20:
-                tot_nedbør = sum(nedbør)
-                tot_nedbør_måned[år_måned] = tot_nedbør
-                #    print(år_måned,tot_nedbør)
-                #else:
-                 #  print("Ikke nok nedbørsdager! ")
+    if snødybde:
+        maks_snødybde = max(snødybde)
+        maks_snødybde_måned[år_måned] = maks_snødybde
 
-
-            if snødybde:
-                maks_snødybde = max(snødybde)
-                maks_snødybde_måned[år_måned] = maks_snødybde
-                    #print(år_måned, maks_snødybde)
-
-            if mid_temp:
-                maks_måned = max(mid_temp)
-                maks_per_måned[år_måned] = maks_måned
-                min_måned = min(mid_temp)
-                min_per_måned[år_måned] = min_måned
-                    #print(år_måned, maks_måned)
-                    #print(år_måned, min_måned)
-
-
+    if mid_temp:
+        maks_måned = max(mid_temp)
+        maks_per_måned[år_måned] = maks_måned
+        min_måned = min(mid_temp)
+        min_per_måned[år_måned] = min_måned
 
 datoer = []
 snødybder = []
@@ -148,7 +125,7 @@ min_temp_datoer = []
 
 for år_måned in sorted(min_per_måned):
     min_temp_verdier.append(min_per_måned[år_måned])
-    dato = datetime(år_måned[0], år_måned[1],1)
+    dato = datetime(år_måned[0], år_måned[1], 1)
     min_temp_datoer.append(dato)
 
 maks_midvind_verdier = []
@@ -156,10 +133,10 @@ maks_midvind_datoer = []
 
 for år_måned in sorted(maks_midvind_måned):
     maks_midvind_verdier.append(maks_midvind_måned[år_måned])
-    dato = datetime(år_måned[0], år_måned[1],1)
+    dato = datetime(år_måned[0], år_måned[1], 1)
     maks_midvind_datoer.append(dato)
 
-fig, ax = plt.subplots(5, 1, figsize=(12,10), sharex=True)
+fig, ax = plt.subplots(5, 1, figsize=(12, 10), sharex=True)
 
 ax[0].plot(datoer, snødybder)
 ax[1].plot(nedbør_datoer, nedbør_verdier)
@@ -180,7 +157,6 @@ ax[3].set_title("Min Temperatur")
 ax[4].set_title("Maks Middelvind")
 
 plt.tight_layout()
-
 
 sommerdager = {}
 høysommerdager = {}
@@ -211,7 +187,6 @@ for år_måned in månedsdata:
         if temperatur > 30:
             tropedager[år] += 1
 
-
 årstall = sorted(sommerdager)
 
 fig2, ax2 = plt.subplots(figsize=(12, 6))
@@ -232,8 +207,6 @@ ax2.legend()
 ax2.grid(True)
 
 fig2.tight_layout()
-
-# DEL C – GJENNOMSNITTSTEMPERATUR PER ÅR
 
 temperaturer_per_år = {}
 
@@ -272,9 +245,6 @@ for fil in filer:
 
             temperaturer_per_år[nøkkel][dato.date()] = temperatur
 
-
-
-
 fig3, ax3 = plt.subplots(figsize=(12, 6))
 
 alle_år = [år for stasjon, år in temperaturer_per_år]
@@ -301,7 +271,6 @@ for stasjonsnummer in stasjoner:
     ax3.plot(årstall, gjennomsnitt,
              label=stasjoner[stasjonsnummer])
 
-
 ax3.set_title("Gjennomsnittlig årstemperatur")
 ax3.set_xlabel("År")
 ax3.set_ylabel("Gjennomsnittstemperatur (°C)")
@@ -310,14 +279,10 @@ ax3.grid(True)
 
 fig3.tight_layout()
 
-
 vind_per_måned = {}
-
 
 for måned in range(1, 13):
     vind_per_måned[måned] = []
-
-
 
 for år_måned in månedsdata:
 
@@ -328,8 +293,6 @@ for år_måned in månedsdata:
         if rad[6].strip() != "-" and rad[6].strip() != "":
             vind = float(rad[6].strip().replace(",", "."))
             vind_per_måned[måned].append(vind)
-
-
 
 måneder = []
 min_vind = []
@@ -347,8 +310,6 @@ for måned in sorted(vind_per_måned):
         median_vind.append(median(målinger))
         maks_vind.append(max(målinger))
 
-
-
 fig4, ax4 = plt.subplots(figsize=(12, 6))
 
 ax4.plot(måneder, min_vind, marker="o", label="Minimum vindstyrke")
@@ -364,7 +325,6 @@ ax4.legend()
 ax4.grid(True)
 
 fig4.tight_layout()
-
 
 snø_per_sesong = {}
 
@@ -395,10 +355,8 @@ for fil in filer:
             except ValueError:
                 continue
 
-
             if dato.month not in (11, 12, 1, 2, 3, 4):
                 continue
-
 
             if dato.month >= 11:
                 sesong = dato.year
@@ -411,8 +369,6 @@ for fil in filer:
                 snø_per_sesong[nøkkel] = {}
 
             snø_per_sesong[nøkkel][dato.date()] = snødybde
-
-
 
 alle_sesonger = sorted(
     {sesong for stasjon, sesong in snø_per_sesong}
@@ -431,12 +387,10 @@ for stasjon in stasjoner:
 
         målinger = snø_per_sesong.get(nøkkel, {})
 
-
         start = datetime(sesong, 11, 1)
         slutt = datetime(sesong + 1, 5, 1)
 
         antall_dager = (slutt - start).days
-
 
         if len(målinger) >= antall_dager / 2:
 
